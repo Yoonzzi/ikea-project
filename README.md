@@ -4,7 +4,7 @@
 
 - Run api server
 ```
-pip instarll -r requirements.txt
+pip install -r requirements.txt
 set FLASK_APP=api/main.py
 flask run
 ```
