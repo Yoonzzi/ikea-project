@@ -250,5 +250,5 @@ $RECYCLE.BIN/
 .idea
 .code
 venv
-chromedriver.exe
+chromedriver
 __pycache__

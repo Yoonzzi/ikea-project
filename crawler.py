@@ -11,7 +11,7 @@ options = webdriver.ChromeOptions()
 options.add_argument('headless')
 options.add_argument('window-size=1920x1080')
 options.add_argument("disable-gpu")
-driver = webdriver.Chrome(executable_path="chromedriver.exe", chrome_options=options)
+driver = webdriver.Chrome(executable_path="./chromedriver", chrome_options=options)
 driver.set_page_load_timeout(30)
 driver.implicitly_wait(3)
 
@@ -43,7 +43,7 @@ def parse_metric(metric_text):
 def crawl_show_page(item_id, queue):
     cur.execute("SELECT * FROM items where id=?", (item_id,))
     rows = cur.fetchall()
-    if len(rows) > 0:
+    if len(rows) > 0 and len(queue) > 0:
         return list(filter(lambda queue_id: queue_id != item_id, queue))
 
     path = ("https://www.ikea.com/kr/ko/catalog/products/%s/" % (item_id))
@@ -91,16 +91,18 @@ def crawl_show_page(item_id, queue):
                 right_index = trim_left.find("/?")
                 if right_index > 0:
                     new_id = trim_left[0:right_index]
-                    queue.append(new_id)
+                    if new_id not in queue:
+                        queue.append(new_id)
         except KeyError:
             pass
 
+    print("left queue " + str(len(queue)))
     print("saved")
     return list(filter(lambda queue_id: queue_id != item_id, queue))
 
 
 job_queue = []
-crawl_show_page("80361494", job_queue)
+crawl_show_page("20352628", job_queue)
 while len(job_queue) is not 0:
     new_queue = crawl_show_page(job_queue[0], job_queue)
     job_queue = new_queue
